@@ -33,6 +33,7 @@ function RequestFormDetailPage() {
     isKhac: false,
     LabId: 1,
     GhiChu: "",
+    ThietBiSerial: "",
   };
 
   const [detailForm, setDetailForm] = useState(initialDetailForm);
