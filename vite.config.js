@@ -8,7 +8,7 @@ export default defineConfig({
     proxy: {
       // Proxy các yêu cầu bắt đầu bằng /api/v1
       "/api/v1": {
-        target: import.meta.env.VITE_API_URL || "http://localhost:2811",
+        target: "http://localhost:2811",
         changeOrigin: true,
         secure: false,
       },

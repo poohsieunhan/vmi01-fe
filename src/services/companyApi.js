@@ -1,13 +1,13 @@
 import axios from "axios";
 
-const API_BASE_URL = "/api/v1"; // Sử dụng đường dẫn tương đối để proxy hoạt động
+const API_BASE_URL = import.meta.env.VITE_API_URL + "/api/v1"; // Sử dụng đường dẫn tương đối để proxy hoạt động
 
 const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
 const companyApi = {
-  async getAll({ page = 1, limit = 10}) {
+  async getAll({ page = 1, limit = 10 }) {
     const res = await api.get("/company", {
       params: { page, limit },
     });
