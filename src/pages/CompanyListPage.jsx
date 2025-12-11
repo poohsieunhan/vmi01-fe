@@ -5,6 +5,11 @@ import MySearchInput from "../components/common/MySearchInput";
 import { useCompanies } from "../hooks/company/useCompany";
 import { useCompanyForm } from "../hooks/company/userCompanyForm";
 import { companyColumns } from "../components/company/companyColumns";
+import exportTempApi from "../services/exporttempApi";
+import toast from "react-hot-toast";
+import { useState } from "react";
+//import companyApi from "../services/companyApi";
+import importCompanyApi from "../services/importCompanyApi";
 
 function CompanyListPage() {
   const {
@@ -33,6 +38,38 @@ function CompanyListPage() {
     handleChange,
     handleSubmit,
   } = useCompanyForm({ fetchCompanies });
+  const [file, setFile] = useState(null);
+  const handleImport = async () => {
+    if (!file) return toast.error("Chọn file Excel trước");
+
+    const formData = new FormData();
+    formData.append("file", file);
+    console.log("formData:", formData);
+    try {
+      const res = await importCompanyApi.importExcel(formData);
+      toast.success("Import thành công");
+
+      console.log("Result:", res.data);
+    } catch (err) {
+      toast.error("Import thất bại");
+      console.log("handle import:", err);
+    }
+  };
+  const handleDownloadTemplate = async () => {
+    try {
+      const res = await exportTempApi.downloadTemplate();
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "company_template.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      toast.success("Đã tải template Excel");
+    } catch (err) {
+      toast.error("Không thể tải template");
+      console.log("handle template download:", err);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-100 px-4 py-6">
@@ -60,6 +97,26 @@ function CompanyListPage() {
                 className="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium shadow hover:bg-indigo-700 transition"
               >
                 + Thêm công ty
+              </button>
+              <div className="flex items-center gap-3">
+                <input
+                  type="file"
+                  accept=".xlsx,.xls"
+                  onChange={(e) => setFile(e.target.files[0])}
+                />
+
+                <button
+                  onClick={handleImport}
+                  className="px-3 py-1 bg-green-600 text-white rounded"
+                >
+                  Import Excel
+                </button>
+              </div>
+              <button
+                onClick={handleDownloadTemplate}
+                className="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium shadow hover:bg-indigo-700 transition"
+              >
+                Download Temp
               </button>
             </div>
           </div>
