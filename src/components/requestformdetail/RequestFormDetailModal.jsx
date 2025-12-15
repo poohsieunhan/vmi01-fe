@@ -13,11 +13,10 @@ function RequestFormDetailModal({
   onSubmit,
   onClose,
 }) {
-
-//   const companyOptions = (companies || []).map((c) => ({
-//   value: c.Id,
-//   label: c.TenCongTy,
-// }));
+  //   const companyOptions = (companies || []).map((c) => ({
+  //   value: c.Id,
+  //   label: c.TenCongTy,
+  // }));
   const title =
     mode === "create"
       ? "Thêm phiếu"
@@ -30,9 +29,9 @@ function RequestFormDetailModal({
       {mode === "delete" && selectedRequestForm ? (
         <form onSubmit={onSubmit} className="space-y-4">
           <p className="text-sm text-slate-700">
-            Bạn có chắc chắn muốn xóa phiếu{" "}
+            Bạn có chắc chắn muốn xóa dòng này{" "}
             <span className="font-semibold">{selectedRequestForm.SoPhieu}</span>{" "}
-            (ID: {selectedDevice.Id})?
+            (ID: {selectedRequestFormDetail.Id})?
           </p>
           {formError && <p className="text-sm text-rose-600">{formError}</p>}
           <div className="flex justify-end gap-2">
@@ -54,98 +53,129 @@ function RequestFormDetailModal({
           </div>
         </form>
       ) : (
-        <form onSubmit={onSubmit} className="space-y-4 text-left">
-          <MyInputField
-            label="Số phiếu: (*)"
-            name="SoPhieu"
-            value={formData.SoPhieu}
-            onChange={onChange}
-          />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <MyInputField
-            label="Ngày nhận:"
-            as="input"
-            type="date"
-            name="NgayNhan"
-            value={formData.NgayNhan}
-            onChange={onChange}
-          />
-           <MyInputField
-            label="Ngày trả dự kiến:"
-            as="input"
-            type="date"
-            name="NgayTraDuKien"
-            value={formData.NgayTraDuKien}
-            onChange={onChange}
-          />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-           <MyComboBox
-            label="Tên Khách hàng:"
-            name="CongTyId"
-            value={formData.CongTyId}
-            options={companyOptions}
-            onChange={onChange}
-            />
-         <MyComboBox
-            label="CS Sử dụng:"
-            name="CongTySuDungId"
-            value={formData.CongTySuDungId}
-            options={companyOptions}
-            onChange={onChange}
+        <form
+          onSubmit={handleAddDetail}
+          className="grid grid-cols-12 gap-4 items-end bg-white rounded-lg p-4 border border-slate-200"
+        >
+          {/* Row 1: Thiết bị / Serial / Tình trạng / SL */}
+          <div className="col-span-12 md:col-span-5">
+            <MyComboBox
+              label="Thiết bị"
+              name="ThietBiId"
+              value={detailForm.ThietBiId}
+              options={deviceOptions}
+              onChange={handleDeviceChange}
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-               <MyInputField
-            label="Thực hiện tại VMI"
-            name="ThucHienTai"
-            type="checkbox"
-            value={formData.ThucHienTai}
-            onChange={onChange}
-          />
-              <MyInputField
-            label="YC Giấy"
-            name="YeuCauGiay"
-            type="checkbox"
-            value={formData.YeuCauGiay}
-            onChange={onChange}
-          />
-             <MyInputField
-            label="YC Hiệu chỉnh:"
-            name="YeuCauHieuChinh"
-            type="checkbox"
-            value={formData.YeuCauHieuChinh}
-            onChange={onChange}
-          />
-             <MyInputField
-            label="Cơ sở:"
-            name="CoSo"
-            type="checkbox"
-            value={formData.CoSo}
-            onChange={onChange}
-          />
-          <MyInputField
-            label="YC phương pháp:"
-            name="YeuCauPhuongPhap"
-            type="checkbox"
-            value={formData.YeuCauPhuongPhap}
-            onChange={onChange}
-          />
-          <MyInputField
-            label="Hình thức giao nhận:"
-            name="HinhThucGiaoNhan"
-            type="checkbox"
-            value={formData.HinhThucGiaoNhan}
-            onChange={onChange}
-          />
-           <MyInputField
-            label="Ngày trả TT:"
-            name="NgayTraThucTe"
-            value={formData.NgayTraThucTe}
-            onChange={onChange}
-          />
-          </div>       
-               
+
+          <div className="col-span-12 md:col-span-3">
+            <label className="block text-xs font-semibold text-slate-600 mb-1">
+              Serial
+            </label>
+            <input
+              type="text"
+              name="ThietBiSerial"
+              value={detailForm.ThietBiSerial}
+              onChange={handleDetailChange}
+              className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm"
+            />
+          </div>
+
+          <div className="col-span-12 md:col-span-3">
+            <MyComboBox
+              label="Tình trạng"
+              name="TrangThaiThietBiId"
+              value={detailForm.TrangThaiThietBiId}
+              options={deviceStatusOptions}
+              onChange={handleDeviceStatusChange}
+            />
+          </div>
+
+          <div className="col-span-12 md:col-span-1">
+            <label className="block text-xs font-semibold text-slate-600 mb-1">
+              SL
+            </label>
+            <input
+              type="number"
+              min={1}
+              name="SoLuong"
+              value={detailForm.SoLuong}
+              onChange={handleDetailChange}
+              className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm text-right"
+            />
+          </div>
+
+          {/* Row 2: Lab / Ghi chú */}
+          <div className="col-span-12 md:col-span-3">
+            <MyComboBox
+              label="Lab"
+              name="LabId"
+              value={detailForm.LabId}
+              options={labOptions}
+              onChange={handleLabChange}
+            />
+          </div>
+
+          <div className="col-span-12 md:col-span-9">
+            <label className="block text-xs font-semibold text-slate-600 mb-1">
+              Ghi chú
+            </label>
+            <input
+              type="text"
+              name="GhiChu"
+              value={detailForm.GhiChu}
+              onChange={handleDetailChange}
+              className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm"
+            />
+          </div>
+
+          {/* Row 3: Checkbox / Button */}
+          <div className="col-span-12 md:col-span-8 flex flex-wrap items-center gap-6 pt-1">
+            <label className="inline-flex items-center gap-2 text-sm text-slate-700">
+              <input
+                type="checkbox"
+                name="isHC"
+                checked={detailForm.isHC}
+                onChange={handleDetailChange}
+                className="h-4 w-4"
+              />
+              HC
+            </label>
+
+            <label className="inline-flex items-center gap-2 text-sm text-slate-700">
+              <input
+                type="checkbox"
+                name="isKD"
+                checked={detailForm.isKD}
+                onChange={handleDetailChange}
+                className="h-4 w-4"
+              />
+              KD
+            </label>
+
+            <label className="inline-flex items-center gap-2 text-sm text-slate-700">
+              <input
+                type="checkbox"
+                name="isDTN"
+                checked={detailForm.isDTN}
+                onChange={handleDetailChange}
+                className="h-4 w-4"
+              />
+              DTN
+            </label>
+
+            <label className="inline-flex items-center gap-2 text-sm text-slate-700">
+              <input
+                type="checkbox"
+                name="isKhac"
+                checked={detailForm.isKhac}
+                onChange={handleDetailChange}
+                className="h-4 w-4"
+              />
+              Khác
+            </label>
+          </div>
+
           {formError && <p className="text-sm text-rose-600">{formError}</p>}
 
           <div className="flex justify-end gap-2">

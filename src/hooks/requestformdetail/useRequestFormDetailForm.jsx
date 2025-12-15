@@ -7,13 +7,13 @@ function initialForm() {
   return {
     RequestFormId: "",
     ThietBiId: "",
-    SoLuong:"",
+    SoLuong: "",
     TrangThaiThietBiId: "",
-    isHC:false,
-    isKD:false,
-    isDTN:false,
-    isKhac:false,
-    LadId:"",
+    isHC: false,
+    isKD: false,
+    isDTN: false,
+    isKhac: false,
+    LadId: "",
     GhiChu: "",
   };
 }
@@ -21,7 +21,8 @@ function initialForm() {
 export function useRequestFormDetailForm({ fetchRequestForms }) {
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState("create"); // 'create' | 'edit' | 'delete'
-  const [selectedRequestFormDetail, setSelectedRequestFormDetail] = useState(null);
+  const [selectedRequestFormDetail, setSelectedRequestFormDetail] =
+    useState(null);
   const [formData, setFormData] = useState(initialForm());
   const [formError, setFormError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -35,20 +36,21 @@ export function useRequestFormDetailForm({ fetchRequestForms }) {
     setOpen(true);
   };
 
-  const openEdit = (requestFormDetail) => {
+  const openEdit = (rfd) => {
     setMode("edit");
-    setSelectedRequestFormDetail(requestFormDetail);
+    setSelectedRequestFormDetail(rfd);
     setFormData({
-      SoPhieu: requestFormDetail.RequestFormText?.SoPhieu|| "",
-      ThietBiId: ThietBiText?.TenThietBi || "",
-      SoLuong: requestForm.SoLuong || "",
-      TrangThaiThietBiId: TrangThaiThietBiText?.TenTrangThai || "",
-      isHC: !!requestFormDetail.isHC || "",
-      isKD: !!requestFormDetail.isKD || "",
-      isDTN: !!requestFormDetail.isDTN || "",
-      isKhac: !!requestFormDetail.isKhac || "",
-      LabId: !!LabText?.TenPhongBan || "",
-      GhiChu: !!requestFormDetail.GhiChu || "",
+      RequestFormId: rfd.RequestFormId ?? "",
+      ThietBiId: rfd.ThietBiId ?? "",
+      ThietBiSerial: rfd.ThietBiSerial ?? "",
+      SoLuong: rfd.SoLuong ?? 1,
+      TrangThaiThietBiId: rfd.TrangThaiThietBiId ?? "",
+      isHC: !!rfd.isHC,
+      isKD: !!rfd.isKD,
+      isDTN: !!rfd.isDTN,
+      isKhac: !!rfd.isKhac,
+      LabId: rfd.LabId ?? "",
+      GhiChu: rfd.GhiChu ?? "",
     });
     setFormError("");
     setOpen(true);
@@ -67,25 +69,24 @@ export function useRequestFormDetailForm({ fetchRequestForms }) {
     setSelectedRequestForm(null);
   };
 
-const handleChange = (e) => {
-  const { name, type, value, checked } = e.target;
+  const handleChange = (e) => {
+    const { name, type, value, checked } = e.target;
 
-  let newValue;
+    let newValue;
 
-  if (type === "checkbox") {
-    newValue = checked;
-  } else if (type === "number") {
-    newValue = value === "" ? "" : Number(value);
-  } else {
-    newValue = value;
-  }
+    if (type === "checkbox") {
+      newValue = checked;
+    } else if (type === "number") {
+      newValue = value === "" ? "" : Number(value);
+    } else {
+      newValue = value;
+    }
 
-  setFormData((prev) => ({
-    ...prev,
-    [name]: newValue,
-  }));
-};
-
+    setFormData((prev) => ({
+      ...prev,
+      [name]: newValue,
+    }));
+  };
 
   const handleSubmit = async (e, pagination) => {
     e.preventDefault();
@@ -93,22 +94,19 @@ const handleChange = (e) => {
     setSubmitting(true);
 
     try {
-      if (
-        (mode === "create" || mode === "edit") &&
-        !formData.SoPhieu.trim()
-      ) {
+      if ((mode === "create" || mode === "edit") && !formData.SoPhieu.trim()) {
         //setFormError("Số phiếu là bắt buộc.");
         //setSubmitting(false);
         //return;
       }
 
       const buildPayload = (data) => ({
-  ...data,
-  isHC: data.isHC ? 1 : 0,
-  isKD: data.isKD ? 1 : 0,
-  isDTN: data.isDTN ? 1 : 0,
-  isKhac: data.isKhac ? 1 : 0,
-});
+        ...data,
+        isHC: data.isHC ? 1 : 0,
+        isKD: data.isKD ? 1 : 0,
+        isDTN: data.isDTN ? 1 : 0,
+        isKhac: data.isKhac ? 1 : 0,
+      });
 
       if (mode === "create") {
         try {
@@ -127,8 +125,11 @@ const handleChange = (e) => {
 
       if (mode === "edit" && selectedRequestFormDetail) {
         try {
-          await requestFormDetailApi.update(selectedRequestFormDetail.Id, buildPayload(formData));
-          console.log(formData)
+          await requestFormDetailApi.update(
+            selectedRequestFormDetail.Id,
+            buildPayload(formData)
+          );
+          console.log(formData);
           await fetchRequestFormDetails({
             page: pagination?.page || 1,
             limit: pagination?.limit || 10,
