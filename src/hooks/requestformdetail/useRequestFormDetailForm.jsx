@@ -7,18 +7,19 @@ function initialForm() {
   return {
     RequestFormId: "",
     ThietBiId: "",
+    ThietBiSerial: "",
     SoLuong: "",
     TrangThaiThietBiId: "",
     isHC: false,
     isKD: false,
     isDTN: false,
     isKhac: false,
-    LadId: "",
+    LabId: "",
     GhiChu: "",
   };
 }
 
-export function useRequestFormDetailForm({ fetchRequestForms }) {
+export function useRequestFormDetailForm({ fetchRequestFormDetails }) {
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState("create"); // 'create' | 'edit' | 'delete'
   const [selectedRequestFormDetail, setSelectedRequestFormDetail] =
@@ -26,6 +27,8 @@ export function useRequestFormDetailForm({ fetchRequestForms }) {
   const [formData, setFormData] = useState(initialForm());
   const [formError, setFormError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  //const [requestFormDetail, setRequestFormDetail] = useState([]);
+  //const [pagination, setPagination] = useState(null);
 
   // open/close modal
   const openCreate = () => {
@@ -56,9 +59,9 @@ export function useRequestFormDetailForm({ fetchRequestForms }) {
     setOpen(true);
   };
 
-  const openDelete = (requestFormDetail) => {
+  const openDelete = (rfd) => {
     setMode("delete");
-    setSelectedRequestForm(requestFormDetail);
+    setSelectedRequestFormDetail(rfd);
     setFormError("");
     setOpen(true);
   };
@@ -66,7 +69,7 @@ export function useRequestFormDetailForm({ fetchRequestForms }) {
   const closeModal = () => {
     if (submitting) return;
     setOpen(false);
-    setSelectedRequestForm(null);
+    setSelectedRequestFormDetail(null);
   };
 
   const handleChange = (e) => {
@@ -88,13 +91,33 @@ export function useRequestFormDetailForm({ fetchRequestForms }) {
     }));
   };
 
+  // const fetchRequestFormDetails = async (rfId) => {
+  //   try {
+  //     //setLoading(true);
+  //     //setError("");
+  //     const res = await requestFormDetailApi.getAllByRFId(rfId);
+  //     //console.log("fetchdevices res:", res);
+  //     //console.log("res.pagination:", res.pagination);
+  //     setRequestFormDetail(res.data || []);
+  //     setPagination(res.pagination || null);
+  //   } catch (err) {
+  //     console.error(err);
+  //     // setError(
+  //     //   "Không tải được danh sách chi tiết phiếu. Kiểm tra lại backend."
+  //     // );
+  //     toast.error("Không tải được danh sách chi tiết phiếu.");
+  //   } finally {
+  //     //setLoading(false);
+  //   }
+  // };
+
   const handleSubmit = async (e, pagination) => {
     e.preventDefault();
     setFormError("");
     setSubmitting(true);
 
     try {
-      if ((mode === "create" || mode === "edit") && !formData.SoPhieu.trim()) {
+      if (mode === "create" || mode === "edit") {
         //setFormError("Số phiếu là bắt buộc.");
         //setSubmitting(false);
         //return;
@@ -111,7 +134,7 @@ export function useRequestFormDetailForm({ fetchRequestForms }) {
       if (mode === "create") {
         try {
           await requestFormDetailApi.add(buildPayload(formData));
-          await fetchRequestFormDetails({ page: 1, limit: 10 });
+          await fetchRequestFormDetails(formData.RequestFormId);
           setOpen(false);
           toast.success("Thêm mới phiếu thành công.");
         } catch (error) {
@@ -129,11 +152,8 @@ export function useRequestFormDetailForm({ fetchRequestForms }) {
             selectedRequestFormDetail.Id,
             buildPayload(formData)
           );
-          console.log(formData);
-          await fetchRequestFormDetails({
-            page: pagination?.page || 1,
-            limit: pagination?.limit || 10,
-          });
+          console.log("edit rfd:", formData);
+          await fetchRequestFormDetails?.();
           setOpen(false);
           toast.success("Cập nhật phiếu thành công.");
         } catch (error) {
@@ -148,10 +168,7 @@ export function useRequestFormDetailForm({ fetchRequestForms }) {
       if (mode === "delete" && selectedRequestFormDetail) {
         try {
           await requestFormDetailApi.delete(selectedRequestFormDetail.Id);
-          await fetchRequestFormDetails({
-            page: 1,
-            limit: pagination?.limit || 10,
-          });
+          await fetchRequestFormDetails?.();
           setOpen(false);
           toast.success("Xóa phiếu thành công.");
         } catch (error) {

@@ -223,7 +223,7 @@ function RequestFormDetailPage() {
   const {
     open,
     mode,
-    selectedRequestForm,
+    selectedRequestFormDetail,
     formData,
     formError,
     submitting,

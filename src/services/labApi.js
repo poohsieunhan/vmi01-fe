@@ -17,6 +17,11 @@ const labApi = {
     return res.data.metadata; // mảng thiết bị
   },
 
+  async getById(id) {
+    const res = await api.get(`/lab/${id}`);
+    return res.data.metadata;
+  },
+
   async add(data) {
     const res = await api.post("/lab", data);
     return res.data;

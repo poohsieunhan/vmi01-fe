@@ -17,6 +17,8 @@ const requestFormDetailApi = {
 
   async getAllByRFId(id) {
     const res = await api.get(`/requestformdetail/rfd/${id}`);
+    console.log("getAllByRFId-ID", id);
+    console.log("getAllByRFId:", res.data.metadata);
     return res.data.metadata;
   },
 

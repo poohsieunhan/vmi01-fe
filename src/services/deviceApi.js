@@ -17,6 +17,11 @@ const deviceApi = {
     return res.data.metadata; // mảng thiết bị
   },
 
+  async getById(id) {
+    const res = await api.get(`/device/${id}`);
+    return res.data.metadata;
+  },
+
   async add(data) {
     const res = await api.post("/device", data);
     return res.data;
