@@ -9,7 +9,7 @@ import companyApi from "../services/companyApi";
 import { useNavigate } from "react-router-dom";
 import exportApi from "../services/exportApi";
 import toast from "react-hot-toast";
-import { Pencil, Trash2, Plus, Eye } from "lucide-react";
+import { ClipboardList, Pencil, Trash2, FileDown } from "lucide-react";
 
 function RequestFormPage() {
   const {
@@ -155,7 +155,7 @@ function RequestFormPage() {
                     title="Thêm chi tiết phiếu"
                     className="px-3 py-1 text-xs font-medium rounded bg-blue-500 text-white hover:bg-blue-600"
                   >
-                    <Plus size={16} />
+                    <ClipboardList size={16} />
                   </button>
                   <button
                     type="button"
@@ -179,7 +179,7 @@ function RequestFormPage() {
                     title="Xuất phiếu"
                     className="px-3 py-1 text-xs font-medium rounded bg-red-500 text-white hover:bg-red-600"
                   >
-                    <Eye size={16} />
+                    <FileDown size={16} />
                   </button>
                 </>
               )}
