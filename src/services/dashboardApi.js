@@ -7,8 +7,14 @@ const api = axios.create({
 });
 
 const dashboardApi = {
-  async getInspecStats() {
-    
+  async getInspecStats({ fromDate, toDate }) {
+    const params = {};
+    if (fromDate) params.fromDate = fromDate;
+    if (toDate) params.toDate = toDate;
+    const res = await api.post("/dashboard/inspec-stats", {
+      params,
+    });
+    return res.data;
   },
 };
 

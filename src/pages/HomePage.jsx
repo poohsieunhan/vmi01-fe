@@ -1,10 +1,11 @@
 // src/pages/HomePage.jsx
+import DashboardPage from "./DashboardPage";
 
 function HomePage() {
   return (
     <div>
       <h1>Trang chủ</h1>
-      <p>ABC</p>
+      <DashboardPage />
     </div>
   );
 }
