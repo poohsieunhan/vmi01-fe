@@ -1,4 +1,3 @@
-export const convertSoPhieu(str) {
+export const convertSoPhieu = (str) => {
   return str?.replace(/\//g, "_");
-}
-
+};
