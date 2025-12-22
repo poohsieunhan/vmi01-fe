@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import exportApi from "../services/exportApi";
 import toast from "react-hot-toast";
 import { ClipboardList, Pencil, Trash2, FileDown } from "lucide-react";
+import { convertSoPhieu } from "../utis/stringUltis";
 
 function RequestFormPage() {
   const {
@@ -56,6 +57,15 @@ function RequestFormPage() {
     fetchCompanies();
   }, []);
 
+  const onClear = () => {
+    handleChange({
+      target: {
+        name: "CongTySuDungId",
+        value: "",
+      },
+    });
+  };
+
   const handleExportWord = async (requestForm) => {
     try {
       const _id = requestForm.Id;
@@ -71,7 +81,9 @@ function RequestFormPage() {
 
       const a = document.createElement("a");
       a.href = url;
-      a.download = `Phieu-tiep-nhan-v1.docx`;
+      a.download = `Phieu-tiep-nhan-v1-${convertSoPhieu(
+        requestForm.SoPhieu
+      )}.docx`;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -200,6 +212,7 @@ function RequestFormPage() {
         onChange={handleChange}
         onSubmit={(e) => handleSubmit(e, pagination)}
         onClose={closeModal}
+        onClear={onClear}
       />
     </div>
   );

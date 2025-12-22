@@ -7,17 +7,17 @@ function initialForm() {
   return {
     SoPhieu: "",
     NgayNhan: "",
-    NgayTraDuKien:"",
+    NgayTraDuKien: "",
     CongTyId: "",
     CongTySuDungId: "",
-    ThucHienTai:false,
-    YeuCauGiay:false,
-    YeuCauHieuChinh:false,
-    CoSo:false,
-    YeuCauPhuongPhap:false,
-    HinhThucGiaoNhan:false,
+    ThucHienTai: false,
+    YeuCauGiay: false,
+    YeuCauHieuChinh: false,
+    CoSo: false,
+    YeuCauPhuongPhap: false,
+    HinhThucGiaoNhan: false,
     SoBG: "",
-    NgayTraThucTe:"",
+    NgayTraThucTe: "",
   };
 }
 
@@ -46,7 +46,10 @@ export function useRequestForm({ fetchRequestForms }) {
       NgayNhan: toInputDate(requestForm.NgayNhan) || "",
       CongTyId: requestForm.CongTy?.Id || "",
       CongTySuDungId: requestForm.CongTySuDung?.Id || "",
-      NgayTraDuKien: toInputDate(requestForm.NgayTraDuKien) ||requestForm.NgayTraDuKien || "",
+      NgayTraDuKien:
+        toInputDate(requestForm.NgayTraDuKien) ||
+        requestForm.NgayTraDuKien ||
+        "",
       ThucHienTai: !!requestForm.ThucHienTai || "",
       YeuCauGiay: !!requestForm.YeuCauGiay || "",
       YeuCauHieuChinh: !!requestForm.YeuCauHieuChinh || "",
@@ -73,25 +76,24 @@ export function useRequestForm({ fetchRequestForms }) {
     setSelectedRequestForm(null);
   };
 
-const handleChange = (e) => {
-  const { name, type, value, checked } = e.target;
+  const handleChange = (e) => {
+    const { name, type, value, checked } = e.target;
 
-  let newValue;
+    let newValue;
 
-  if (type === "checkbox") {
-    newValue = checked;
-  } else if (type === "number") {
-    newValue = value === "" ? "" : Number(value);
-  } else {
-    newValue = value;
-  }
+    if (type === "checkbox") {
+      newValue = checked;
+    } else if (type === "number") {
+      newValue = value === "" ? "" : Number(value);
+    } else {
+      newValue = value;
+    }
 
-  setFormData((prev) => ({
-    ...prev,
-    [name]: newValue,
-  }));
-};
-
+    setFormData((prev) => ({
+      ...prev,
+      [name]: newValue,
+    }));
+  };
 
   const handleSubmit = async (e, pagination) => {
     e.preventDefault();
@@ -99,23 +101,23 @@ const handleChange = (e) => {
     setSubmitting(true);
 
     try {
-      if (
-        (mode === "create" || mode === "edit") &&
-        !formData.SoPhieu.trim()
-      ) {
+      if ((mode === "create" || mode === "edit") && !formData.SoPhieu.trim()) {
         setFormError("Số phiếu là bắt buộc.");
         setSubmitting(false);
         return;
       }
 
       const buildPayload = (data) => ({
-  ...data,
-  ThucHienTai: data.ThucHienTai ? 1 : 0,
-  YeuCauGiay: data.YeuCauGiay ? 1 : 0,
-  YeuCauHieuChinh: data.YeuCauHieuChinh ? 1 : 0,
-  CoSo: data.CoSo ? 1 : 0,
-  YeuCauPhuongPhap: data.YeuCauPhuongPhap ? 1 : 0,
-});
+        ...data,
+        ThucHienTai: data.ThucHienTai ? 1 : 0,
+        YeuCauGiay: data.YeuCauGiay ? 1 : 0,
+        YeuCauHieuChinh: data.YeuCauHieuChinh ? 1 : 0,
+        CoSo: data.CoSo ? 1 : 0,
+        YeuCauPhuongPhap: data.YeuCauPhuongPhap ? 1 : 0,
+        HinhThucGiaoNhan: data.HinhThucGiaoNhan ? 1 : 0,
+        NgayTraThucTe: data.NgayTraThucTe || null,
+        CongTySuDungId: data.CongTySuDungId || 0,
+      });
 
       if (mode === "create") {
         try {
@@ -134,8 +136,11 @@ const handleChange = (e) => {
 
       if (mode === "edit" && selectedRequestForm) {
         try {
-          await requestFormApi.update(selectedRequestForm.Id, buildPayload(formData));
-          console.log(formData)
+          await requestFormApi.update(
+            selectedRequestForm.Id,
+            buildPayload(formData)
+          );
+          console.log(formData);
           await fetchRequestForms({
             page: pagination?.page || 1,
             limit: pagination?.limit || 10,

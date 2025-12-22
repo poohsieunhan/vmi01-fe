@@ -13,6 +13,7 @@ function RequestFormModal({
   onChange,
   onSubmit,
   onClose,
+  onClear,
 }) {
   const companyOptions = (companies || []).map((c) => ({
     value: c.Id,
@@ -95,13 +96,22 @@ function RequestFormModal({
               options={companyOptions}
               onChange={onChange}
             />
-            <MyComboBox
-              label="CS Sử dụng:"
-              name="CongTySuDungId"
-              value={formData.CongTySuDungId}
-              options={companyOptions}
-              onChange={onChange}
-            />
+            <div className="relative flex-1">
+              <MyComboBox
+                label="CS Sử dụng:"
+                name="CongTySuDungId"
+                value={formData.CongTySuDungId}
+                options={companyOptions}
+                onChange={onChange}
+              />
+              <button
+                type="button"
+                onClick={onClear}
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-red-100 px-2 py-1 text-xs text-red-500 hover:bg-red-200"
+              >
+                ✕
+              </button>
+            </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <MyInputField
