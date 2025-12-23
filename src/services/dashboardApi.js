@@ -14,6 +14,7 @@ const dashboardApi = {
     const res = await api.post("/dashboard/inspec-stats", {
       params,
     });
+    console.log(params);
     return res.data;
   },
 };

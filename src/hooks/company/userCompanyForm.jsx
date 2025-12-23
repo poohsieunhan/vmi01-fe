@@ -39,6 +39,8 @@ export function useCompanyForm({ fetchCompanies }) {
     setFormData({
       TenCongTy: company.TenCongTy || "",
       DiaChi: company.DiaChi || "",
+      NguoiDaiDien: company.NguoiDaiDien || "",
+      ChucVu: company.ChucVu || "",
       MaSoThue: company.MaSoThue || "",
       Email: company.Email || "",
       Tel: company.Tel || "",

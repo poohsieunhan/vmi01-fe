@@ -11,6 +11,7 @@ import exportApi from "../services/exportApi";
 import toast from "react-hot-toast";
 import { ClipboardList, Pencil, Trash2, FileDown } from "lucide-react";
 import { convertSoPhieu } from "../utis/stringUltis";
+import { toInputDate, getDate, getDayMinusDays } from "../utis/dateUltis";
 
 function RequestFormPage() {
   const {
@@ -23,6 +24,10 @@ function RequestFormPage() {
     setSearchText,
     fetchRequestForms,
     handleChangePage,
+    fromDate,
+    toDate,
+    setFromDate,
+    setToDate,
   } = useRequest(1, 10);
 
   const {
@@ -42,6 +47,11 @@ function RequestFormPage() {
 
   const [companies, setCompanies] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setToDate(toInputDate(getDate()));
+    setFromDate(toInputDate(getDayMinusDays(30)));
+  }, []);
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -128,6 +138,12 @@ function RequestFormPage() {
                 value={searchText}
                 onChange={setSearchText}
                 onClear={() => setSearchText("")}
+                //onSubmit={handleSearch}
+                showDateRange
+                fromDate={fromDate}
+                toDate={toDate}
+                onChangeFromDate={setFromDate}
+                onChangeToDate={setToDate}
                 placeholder="Tìm theo số phiếu, ngày nhận..."
               />
               <button

@@ -1,4 +1,3 @@
-// src/components/common/SearchInput.jsx
 function SearchInput({
   value,
   onChange,
@@ -6,18 +5,26 @@ function SearchInput({
   onSubmit,
   placeholder = "Tìm kiếm...",
   className = "",
+
+  // NEW
+  showDateRange = false,
+  fromDate,
+  toDate,
+  onChangeFromDate,
+  onChangeToDate,
 }) {
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit && onSubmit(value);
+    onSubmit && onSubmit({ value, fromDate, toDate });
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className={`flex items-center gap-2 ${className}`}
+      className={`flex flex-wrap items-center gap-2 ${className}`}
     >
-      <div className="relative flex-1">
+      {/* Ô search text */}
+      <div className="relative flex-1 min-w-[220px]">
         <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400 text-sm">
           🔍
         </span>
@@ -39,7 +46,25 @@ function SearchInput({
         )}
       </div>
 
-      {/* Nếu muốn có nút tìm kiếm riêng */}
+      {/* NEW: Date range */}
+      {showDateRange && (
+        <>
+          <input
+            type="date"
+            value={fromDate || ""}
+            onChange={(e) => onChangeFromDate?.(e.target.value)}
+            className="h-10 rounded-lg border border-slate-300 px-3 text-sm focus:ring-2 focus:ring-indigo-500"
+          />
+          <span className="text-slate-400 text-sm">→</span>
+          <input
+            type="date"
+            value={toDate || ""}
+            onChange={(e) => onChangeToDate?.(e.target.value)}
+            className="h-10 rounded-lg border border-slate-300 px-3 text-sm focus:ring-2 focus:ring-indigo-500"
+          />
+        </>
+      )}
+
       <button
         type="submit"
         className="hidden md:inline-flex px-3 py-2 rounded-lg bg-indigo-600 text-white text-sm hover:bg-indigo-700"

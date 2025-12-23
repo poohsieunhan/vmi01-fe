@@ -1,7 +1,8 @@
 // src/pages/DashboardPage.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useInspectionStats } from "../hooks/dashboard/useInspecStats";
 import InspectionCharts from "../components/dashboard/InspecStats.Charts";
+import { toInputDate, getDate, getDayMinusDays } from "../utis/dateUltis";
 
 export default function DashboardPage() {
   // Ví dụ chọn lọc ngày bằng input type="date"
@@ -14,6 +15,11 @@ export default function DashboardPage() {
       toDate,
       autoFetch: true,
     });
+
+  useEffect(() => {
+    setToDate(toInputDate(getDate()));
+    setFromDate(toInputDate(getDayMinusDays(30)));
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-100 px-4 py-6">

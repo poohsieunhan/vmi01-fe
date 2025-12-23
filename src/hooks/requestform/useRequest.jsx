@@ -8,13 +8,19 @@ export function useRequest(initialPage = 1, initialLimit = 10) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [searchText, setSearchText] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+
+  const handleSearch = ({ value, fromDate, toDate }) => {
+    fetchRequestForms({ search: value, fromDate, toDate });
+  };
 
   const fetchRequestForms = async ({ page = 1, limit = 10 } = {}) => {
     try {
       setLoading(true);
       setError("");
       const res = await requestFormApi.getAll({ page, limit });
-      //console.log("fetchdevices res:", res); 
+      //console.log("fetchdevices res:", res);
       //console.log("res.pagination:", res.pagination);
       setRequest(res.data || []);
       setPagination(res.pagination || null);
@@ -37,15 +43,30 @@ export function useRequest(initialPage = 1, initialLimit = 10) {
   };
 
   const filteredRequestForms = useMemo(() => {
-    if (!searchText) return request;
+    //if (!searchText) return request;
 
-    const keyword = searchText.toLowerCase();
+    const keyword = searchText.toLowerCase().trim();
+    const from = fromDate ? new Date(fromDate) : null;
+    const to = toDate ? new Date(toDate) : null;
+    if (from) from.setHours(0, 0, 0, 0);
+    if (to) to.setHours(23, 59, 59, 999);
+
     return request.filter((c) => {
-      const sophieu = c.SoPhieu?.toLowerCase() || "";
-      //const mst = c.MaThietBi?.toLowerCase() || "";
-      return sophieu.includes(keyword);
+      const sophieu = (c.SoPhieu || "").toLowerCase();
+      const matchText = keyword ? sophieu.includes(keyword) : true;
+
+      const rawDate = c.NgayNhan || c.CreatedAt;
+      let matchDate = true;
+
+      if (rawDate && (from || to)) {
+        const d = new Date(rawDate);
+        if (from && d < from) matchDate = false;
+        if (to && d > to) matchDate = false;
+      }
+
+      return keyword ? matchText && matchDate : matchDate;
     });
-  }, [request, searchText]);
+  }, [request, searchText, fromDate, toDate]);
 
   return {
     request,
@@ -57,5 +78,9 @@ export function useRequest(initialPage = 1, initialLimit = 10) {
     setSearchText,
     fetchRequestForms,
     handleChangePage,
+    fromDate,
+    toDate,
+    setFromDate,
+    setToDate,
   };
 }

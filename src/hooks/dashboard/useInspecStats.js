@@ -20,7 +20,7 @@ function normalizeStats(payload) {
   // Chấp nhận nhiều dạng BE trả về:
   // - { HC, KD, DTN, Khac }
   // - [{ HC, KD, DTN, Khac }] (do findAll)
-  const root = payload?.metadata ?? payload;        // ưu tiên metadata nếu có
+  const root = payload?.metadata ?? payload; // ưu tiên metadata nếu có
   const obj = Array.isArray(root) ? root[0] : root; // nếu là mảng thì lấy phần tử 0
 
   return {
@@ -67,6 +67,7 @@ export function useInspectionStats({
     setLoading(true);
     setError("");
     try {
+      //console.log("Fetching inspection stats with query:", query);
       const data = await dashboardApi.getInspecStats(query);
       const normalized = normalizeStats(data);
       setStats(normalized);
